@@ -6,7 +6,6 @@ namespace Library.Entities
     {
         public int Id { get; set; }
         public string Author { get; set; }
-        [MaxLength(9)]
         public string Isbn { get; set; }
     }
 }
