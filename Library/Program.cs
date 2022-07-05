@@ -31,4 +31,12 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+//mapowanie zeby pobrac dane (endpoint to data)
+app.MapGet("data", (MyBooksContext db) =>
+{
+    var books = db.Books.ToList();
+    return books;
+}
+);
+
 app.Run();
