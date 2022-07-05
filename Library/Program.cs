@@ -36,7 +36,18 @@ app.MapGet("data", (MyBooksContext db) =>
 {
     var books = db.Books.ToList();
     return books;
-}
-);
+});
+
+//mapowanie zeby dodac dane do bazydanych 
+app.MapPost("create", (MyBooksContext db) =>
+{
+    Book book = new Book()
+    {
+        Author = "Pawel",
+        Isbn = "123456789"
+    };
+
+    db.Books.Add(book);
+});
 
 app.Run();
