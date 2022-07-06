@@ -35,7 +35,7 @@ namespace Library.Controllers
                 return NotFound();
             } else
             {
-                return NotFound();
+                return await _bookService.GetBooks();
             }
         }
 

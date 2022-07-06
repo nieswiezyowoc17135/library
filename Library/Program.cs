@@ -1,4 +1,6 @@
 using Library.Entities;
+using Library.Services;
+using Library.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -15,6 +17,9 @@ builder.Services.AddDbContext<MyBooksContext>(
     //wskazanie ze dla DbContextu chcemy uzywac sqlServera o danym connection stringu
     option => option.UseSqlServer(builder.Configuration.GetConnectionString("MyBooksConnectionString"))
     );
+
+//dodanie serwisu 
+builder.Services.AddTransient<IBookService, BookService>();
 
 var app = builder.Build();
 

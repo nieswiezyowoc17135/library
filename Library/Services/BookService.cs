@@ -1,6 +1,7 @@
 ﻿using Library.Entities;
 using Library.Services.Interfaces;
 using Library.Services.Models;
+using System.Data.Entity;
 
 namespace Library.Services
 {
@@ -36,7 +37,13 @@ namespace Library.Services
 
         public Task<List<BookDto>> GetBooks()
         {
-            throw new NotImplementedException();
+            //zwracanie listy, która tworzy się asynchronicznie z obiektów, które są w bazie
+            return _context.Books.Select(x => new BookDto
+            {
+                /*Id = x.Id,*/
+                Author = x.Author,
+                Isbn = x.Isbn,
+            }).ToListAsync();
         }
     }
 }
