@@ -39,7 +39,7 @@ app.MapGet("data", (MyBooksContext db) =>
 });
 
 //mapowanie zeby dodac dane do bazydanych 
-app.MapPost("create", (MyBooksContext db) =>
+app.MapPost("update", (MyBooksContext db) =>
 {
     Book book = new Book()
     {
@@ -47,7 +47,31 @@ app.MapPost("create", (MyBooksContext db) =>
         Isbn = "123456789"
     };
 
-    db.Books.Add(book);
+    Book book1 = new Book()
+    {
+        Author = "Gawel",
+        Isbn = "987654321"
+    };
+
+    var books = new List<Book>() { book, book1 };
+    db.Books.AddRange(books);
+    db.SaveChanges();
+});
+
+//mapowanie zeby zrobic update danych na id 3
+app.MapPut("edit", (MyBooksContext db) =>
+{
+    Book book = db.Books.First(book => book.Id == 3);
+    book.Author = "Stefan";
+    db.SaveChanges();
+});
+
+//mapowanie zeby usunac dane o danych id
+app.MapDelete("delete", (MyBooksContext db) =>
+{
+    Book book = db.Books.First(book => book.Id == 1);
+    db.Remove(book);
+    db.SaveChanges();
 });
 
 app.Run();
