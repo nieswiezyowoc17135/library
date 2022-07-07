@@ -36,32 +36,41 @@ namespace Library.Services
 
         public async Task<bool> DeleteBook(int id)
         {
-            var book = _context.Books.First(x => x.Id == id);
-            _context.Books.Remove(book);
-            if (await _context.SaveChangesAsync() == 1)
-            {
-                return true;
-            }
-            else
+            var book = _context.Books.FirstOrDefault(x => x.Id == id);
+
+            if (book == null )
             {
                 return false;
             }
 
+            _context.Books.Remove(book);
+
+            if (await _context.SaveChangesAsync() == 1)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         public async Task<bool> EditBook(int id, BookDto book)
         {
-            var _book = _context.Books.First(x => x.Id == id);
+            var _book = _context.Books.FirstOrDefault (x => x.Id == id);
+
+            if (book == null)
+            {
+                return false;
+            }
+
             _book.Author = book.Author;
             _book.Isbn = book.Isbn;
+
             if (await _context.SaveChangesAsync() == 1)
             {
                 return true;
             }
-            else
-            {
-                return false;
-            }
+
+            return false;
         }
 
         public async Task<BookDto> GetOneBook(int id)

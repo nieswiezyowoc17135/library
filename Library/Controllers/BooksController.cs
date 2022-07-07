@@ -30,13 +30,7 @@ namespace Library.Controllers
         [HttpGet]
         public async Task<ActionResult<List<BookDto>>> GetBooks()
         {
-            if (_bookService == null)
-            {
-                return NotFound();
-            } else
-            {
-                return await _bookService.GetAllBooks();
-            }
+            return await _bookService.GetAllBooks();
         }
 
         /// /////////////////////////////////////////////////////////////////////////////////      Zrobione
@@ -48,7 +42,8 @@ namespace Library.Controllers
             if (_bookService == null)
             {
                 return NotFound();
-            } else
+            }
+            else
             {
                 return await _bookService.GetOneBook(id);
             }
@@ -64,6 +59,7 @@ namespace Library.Controllers
             {
                 return NotFound();
             }
+
             if (await _bookService.EditBook(id, book))
             {
                 return Ok();
@@ -79,15 +75,16 @@ namespace Library.Controllers
         [HttpPost]
         public async Task<ActionResult<BookDto>> PostBook(BookDto book)
         {
-            
+
             if (await _bookService.AddSomeBooks(book))
             {
                 return Ok();
-            } else
+            }
+            else
             {
                 return BadRequest();
             }
-            
+
         }
 
         /// ///////////////////////////////////////////////////////////////////////////////////      Zrobione
