@@ -5,9 +5,9 @@ namespace Library.Services.Interfaces
     //interfejs, który definiuje jak ma wyglądać klasa BookService
     public interface IBookService
     {
-        Task AddSomeBooks(BookDto book);
-        Task DeleteBook(BookDto book);
-        Task EditBook(BookDto book);
+        Task<bool> AddSomeBooks(BookDto book);
+        Task<bool> DeleteBook(int id);
+        Task<bool> EditBook(int id, BookDto book);
         Task<BookDto> GetOneBook(int id);                
         Task<List<BookDto>> GetAllBooks();                
     }

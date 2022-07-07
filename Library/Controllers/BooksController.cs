@@ -26,7 +26,6 @@ namespace Library.Controllers
         }
 
         /// ////////////////////////////////////////////////////////////////////////////////      Zrobione
-        /// <returns></returns>
         // GET: api/Books
         [HttpGet]
         public async Task<ActionResult<List<BookDto>>> GetBooks()
@@ -41,7 +40,6 @@ namespace Library.Controllers
         }
 
         /// /////////////////////////////////////////////////////////////////////////////////      Zrobione
-        /// <returns></returns>
         // GET: api/Books/5
         [HttpGet("{id}")]
         public async Task<ActionResult<BookDto>> GetBook(int id)
@@ -57,37 +55,42 @@ namespace Library.Controllers
 
         }
 
+        // /////////////////////////////////////////////////////////////////////////////////      Zrobione
         // PUT: api/Books/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<BookDto>> PutBook(Book book)
+        public async Task<ActionResult<BookDto>> PutBook(BookDto book, int id)
         {
             if (_bookService == null)
             {
                 return NotFound();
             }
+            if (await _bookService.EditBook(id, book))
+            {
+                return Ok();
+            }
             else
             {
-                return NotFound();
+                return BadRequest();
             }
         }
 
-        /// ///////////////////////////////////////////////////////////////////////////////////       nie zrobione
-        /// <returns></returns>
+        /// ///////////////////////////////////////////////////////////////////////////////////      Zrobione
         // POST: api/Books
         [HttpPost]
-        public async Task<ActionResult<BookDto>> PostBook(Book book)
+        public async Task<ActionResult<BookDto>> PostBook(BookDto book)
         {
             
-            if (_bookService == null)
+            if (await _bookService.AddSomeBooks(book))
             {
-                return NotFound();
-            }
-            else
+                return Ok();
+            } else
             {
-                return NotFound();
+                return BadRequest();
             }
+            
         }
 
+        /// ///////////////////////////////////////////////////////////////////////////////////      Zrobione
         // DELETE: api/Books/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBook(int id)
@@ -96,9 +99,13 @@ namespace Library.Controllers
             {
                 return NotFound();
             }
+            if (await _bookService.DeleteBook(id))
+            {
+                return Ok();
+            }
             else
             {
-                return NotFound();
+                return BadRequest();
             }
         }
     }

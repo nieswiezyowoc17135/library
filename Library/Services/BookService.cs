@@ -15,32 +15,65 @@ namespace Library.Services
             _context = context;
         }
 
-        public async Task AddSomeBooks(BookDto book)
+        public async Task<bool> AddSomeBooks(BookDto book)
         {
             var _book = new Book()
             {
-                Id = book.Id,
+                /*Id = book.Id,*/
                 Author = book.Author,
                 Isbn = book.Isbn
             };
 
             _context.Books.Add(_book);
-            await _context.SaveChangesAsync();
-
+            if (await _context.SaveChangesAsync() == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+            //można to tak zapisać
+            /*return await _context.SaveChangesAsync() == 1;*/
         }
 
-        public Task DeleteBook(BookDto book)
+        public async Task<bool> DeleteBook(int id)
         {
-            throw new NotImplementedException();
-        }
+            var book = _context.Books.First(x => x.Id == id);
+            _context.Books.Remove(book);
+            if (await _context.SaveChangesAsync() == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
 
-        public Task EditBook(BookDto book)
+        }
+        /// <summary>
+        /// /////////////////////////////////////////// nie dziala
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="book"></param>
+        /// <returns></returns>
+        public async Task<bool> EditBook(int id, BookDto book)
         {
-            throw new NotImplementedException();
+            var _book = _context.Books.First(x => x.Id == id);
+            _book.Author = book.Author;
+            _book.Isbn = book.Isbn;
+            if (await _context.SaveChangesAsync() == 1)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public async Task<BookDto> GetOneBook(int id)
-        {
+        { 
             return await _context.Books.Select(x => new BookDto
             {
                 Id = x.Id,
