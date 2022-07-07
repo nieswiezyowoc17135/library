@@ -2,6 +2,8 @@ using Library.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Diagnostics;
 using FluentAssertions;
+using Library.Services;
+using Library.Services.Models;
 
 namespace TestingBasics.Test;
 
@@ -26,7 +28,7 @@ public class UnitTest1
         _context.Database.EnsureCreatedAsync();
 
         _context.AddRange(
-            new Book { Id=1, Author = "JakisAutor", Isbn = "123456789" },
+            new Book { Id=1, Author = "JakisAutor", Isbn = "987654321" },
             new Book { Id=2, Author = "JakisDrugiAutor", Isbn = "123456789" }
             );
 
@@ -36,12 +38,14 @@ public class UnitTest1
     [Fact]
     public void GettingAllBooks()
     {
-        //Arrange
-        UnitTest1 dbContext = new UnitTest1();
+        //Arrange (tworzenie nowego serwisu)
+        BookService service = new BookService(_context);
 
-        //Act
-
+        //Act (tutaj wyprowadzam dane z serwisu)
+        List<BookDto> ListOfBooksService = new List<BookDto>();
         
-        //Assert
+        
+
+        //Assert (tutaj porownuje z danymi, które mam aktualnie w bazie danych "in memory")
     }
 }
