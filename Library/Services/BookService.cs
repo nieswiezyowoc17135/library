@@ -19,7 +19,6 @@ namespace Library.Services
         {
             var _book = new Book()
             {
-                /*Id = book.Id,*/
                 Author = book.Author,
                 Isbn = book.Isbn
             };
@@ -33,8 +32,6 @@ namespace Library.Services
             {
                 return false;
             }
-            //można to tak zapisać
-            /*return await _context.SaveChangesAsync() == 1;*/
         }
 
         public async Task<bool> DeleteBook(int id)
@@ -51,12 +48,7 @@ namespace Library.Services
             }
 
         }
-        /// <summary>
-        /// /////////////////////////////////////////// nie dziala
-        /// </summary>
-        /// <param name="id"></param>
-        /// <param name="book"></param>
-        /// <returns></returns>
+
         public async Task<bool> EditBook(int id, BookDto book)
         {
             var _book = _context.Books.First(x => x.Id == id);
@@ -73,13 +65,13 @@ namespace Library.Services
         }
 
         public async Task<BookDto> GetOneBook(int id)
-        { 
+        {
             return await _context.Books.Select(x => new BookDto
             {
                 Id = x.Id,
                 Author = x.Author,
                 Isbn = x.Isbn
-            }).FirstOrDefaultAsync(x => x.Id == id);
+            }).FirstAsync(x => x.Id == id);
         }
 
         public async Task<List<BookDto>> GetAllBooks()
