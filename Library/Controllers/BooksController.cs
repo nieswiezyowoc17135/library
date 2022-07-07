@@ -25,38 +25,41 @@ namespace Library.Controllers
             _bookService = bookService;
         }
 
-
+        /// ////////////////////////////////////////////////////////////////////////////////      Zrobione
+        /// <returns></returns>
         // GET: api/Books
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<BookDto>>> GetBooks()
+        public async Task<ActionResult<List<BookDto>>> GetBooks()
         {
             if (_bookService == null)
             {
                 return NotFound();
             } else
             {
-                return await _bookService.GetBooks();
+                return await _bookService.GetAllBooks();
             }
         }
 
+        /// /////////////////////////////////////////////////////////////////////////////////      Zrobione
+        /// <returns></returns>
         // GET: api/Books/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Book>> GetBook(int id)
+        public async Task<ActionResult<BookDto>> GetBook(int id)
         {
+            /*var book = await _bookService.GetOneBook(id);*/
             if (_bookService == null)
             {
                 return NotFound();
-            }
-            else
+            } else
             {
-                return NotFound();
+                return await _bookService.GetOneBook(id);
             }
+
         }
 
         // PUT: api/Books/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutBook(int id, Book book)
+        public async Task<ActionResult<BookDto>> PutBook(Book book)
         {
             if (_bookService == null)
             {
@@ -68,11 +71,13 @@ namespace Library.Controllers
             }
         }
 
+        /// ///////////////////////////////////////////////////////////////////////////////////       nie zrobione
+        /// <returns></returns>
         // POST: api/Books
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Book>> PostBook(Book book)
+        public async Task<ActionResult<BookDto>> PostBook(Book book)
         {
+            
             if (_bookService == null)
             {
                 return NotFound();

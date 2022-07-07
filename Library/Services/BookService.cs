@@ -1,7 +1,7 @@
 ﻿using Library.Entities;
 using Library.Services.Interfaces;
 using Library.Services.Models;
-using System.Data.Entity;
+using Microsoft.EntityFrameworkCore;
 
 namespace Library.Services
 {
@@ -15,9 +15,18 @@ namespace Library.Services
             _context = context;
         }
 
-        public Task<long> AddSomeBooks(BookDto book)
+        public async Task AddSomeBooks(BookDto book)
         {
-            throw new NotImplementedException();
+            var _book = new Book()
+            {
+                Id = book.Id,
+                Author = book.Author,
+                Isbn = book.Isbn
+            };
+
+            _context.Books.Add(_book);
+            await _context.SaveChangesAsync();
+
         }
 
         public Task DeleteBook(BookDto book)
@@ -30,19 +39,24 @@ namespace Library.Services
             throw new NotImplementedException();
         }
 
-        public Task<BookDto> GetBook(int id)
+        public async Task<BookDto> GetOneBook(int id)
         {
-            throw new NotImplementedException();
+            return await _context.Books.Select(x => new BookDto
+            {
+                Id = x.Id,
+                Author = x.Author,
+                Isbn = x.Isbn
+            }).FirstOrDefaultAsync(x => x.Id == id);
         }
 
-        public Task<List<BookDto>> GetBooks()
+        public async Task<List<BookDto>> GetAllBooks()
         {
             //zwracanie listy, która tworzy się asynchronicznie z obiektów, które są w bazie
-            return _context.Books.Select(x => new BookDto
+            return await _context.Books.Select(x => new BookDto
             {
-                /*Id = x.Id,*/
+                Id = x.Id,
                 Author = x.Author,
-                Isbn = x.Isbn,
+                Isbn = x.Isbn
             }).ToListAsync();
         }
     }

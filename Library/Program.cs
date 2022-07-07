@@ -19,7 +19,7 @@ builder.Services.AddDbContext<MyBooksContext>(
     );
 
 //dodanie serwisu 
-builder.Services.AddTransient<IBookService, BookService>();
+builder.Services.AddScoped<IBookService, BookService>();
 
 var app = builder.Build();
 
