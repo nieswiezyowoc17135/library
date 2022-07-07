@@ -36,16 +36,15 @@ public class UnitTest1
     }
 
     [Fact]
-    public void GettingAllBooks()
+    public async void GettingAllBooks()
     {
         //Arrange (tworzenie nowego serwisu)
         BookService service = new BookService(_context);
 
         //Act (tutaj wyprowadzam dane z serwisu)
-        List<BookDto> ListOfBooksService = new List<BookDto>();
-        
-        
+        List<BookDto> listOfBooks = await Task.Run(() => service.GetAllBooks());
 
         //Assert (tutaj porownuje z danymi, które mam aktualnie w bazie danych "in memory")
+        service.Should().BeEquivalentTo(listOfBooks);
     }
 }
