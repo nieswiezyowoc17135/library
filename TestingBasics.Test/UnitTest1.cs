@@ -28,12 +28,14 @@ public class UnitTest1
         _context.Database.EnsureCreatedAsync();
 
         _context.AddRange(
-            new Book { Id=1, Author = "JakisAutor", Isbn = "987654321" },
-            new Book { Id=2, Author = "JakisDrugiAutor", Isbn = "123456789" }
+            new Book { Id = 1, Author = "JakisAutor", Isbn = "987654321" },
+            new Book { Id = 2, Author = "JakisDrugiAutor", Isbn = "123456789" }
             );
 
         _context.SaveChanges();
     }
+
+    //scenariusze 
 
     [Fact]
     public async void GettingAllBooks()
@@ -42,9 +44,109 @@ public class UnitTest1
         BookService service = new BookService(_context);
 
         //Act (tutaj wyprowadzam dane z serwisu)
-        List<BookDto> listOfBooks = await Task.Run(() => service.GetAllBooks());
+        List<BookDto> listOfBooks = await service.GetAllBooks();
+        //tworznie nowej listy obiektów BookDto, któr¹ potem bêdê porównywa³
+        var expected = await _context.Books.Select(x => new BookDto
+        {
+            Id = x.Id,
+            Author = x.Author,
+            Isbn = x.Isbn
+        }).ToListAsync();
 
         //Assert (tutaj porownuje z danymi, które mam aktualnie w bazie danych "in memory")
-        service.Should().BeEquivalentTo(listOfBooks);
+        expected.Should().BeEquivalentTo(listOfBooks);
     }
+
+    [Fact]
+    public async void GettingOneBook()
+    {
+        //Arrange (tworzenie nowego serwisu)
+        BookService service = new BookService(_context);
+
+        //Act (tutaj wprowadzam dane z serwisu)
+        int id = 1;
+        var foundBook = await service.GetOneBook(id);
+        var expected = await _context.Books.Select(x => new BookDto
+        {
+            Id = x.Id,
+            Author = x.Author,
+            Isbn = x.Isbn
+        }).FirstAsync(x => x.Id == id);
+
+        //Assert (porównanie danych)
+        expected.Should().BeEquivalentTo(foundBook);
+    }
+
+    [Fact]
+    public async void AddingBook()
+    {
+        //Arrange (tworzenie nowego serwisu)
+        BookService service = new BookService(_context);
+
+        //Act
+        //deklaracja nowej ksiazki
+        BookDto newBook = new BookDto()
+        {
+            Id = 3,
+            Author = "JakisTrzeciAutor",
+            Isbn = "135798642"
+        };
+
+        //dodanie nowej ksiazki do bazy
+        await service.AddSomeBooks(newBook);
+
+        //pobranie ksiazki z bazy 
+        var expected = await _context.Books.Select(x => new BookDto
+        {
+            Id = x.Id,
+            Author = x.Author,
+            Isbn = x.Isbn
+        }).FirstAsync(x => x.Id == 3);
+
+        //Porównanie elementów
+        expected.Should().BeEquivalentTo(newBook);
+    }
+
+    [Fact]
+    public async void DeletingBook()
+    {
+        //Arrange
+        BookService service = new BookService(_context);
+
+        //Act
+        await service.DeleteBook(1);
+        var expected = await _context.Books.FirstOrDefaultAsync(x => x.Id == 1);
+
+        expected.Should().BeNull();
+    }
+
+    [Fact]
+    public async void EditingBook()
+    {
+        //Arrange
+        BookService service = new BookService(_context);
+
+        //Act
+        int id = 1;
+        BookDto edit = new BookDto()
+        {
+            Id = 4,
+            Author = "JakisCzwartyAutor",
+            Isbn = "123654789"
+        };
+
+        await service.EditBook(id, edit);
+
+        var expected = await _context.Books.Select(x => new BookDto
+        {
+            Id = x.Id,
+            Author = x.Author,
+            Isbn = x.Isbn
+        }).FirstAsync(x => x.Id == 1);
+
+
+        //Assert
+        expected.Author.Should().BeEquivalentTo(edit.Author);
+        expected.Isbn.Should().BeEquivalentTo(edit.Isbn);
+     }
 }
