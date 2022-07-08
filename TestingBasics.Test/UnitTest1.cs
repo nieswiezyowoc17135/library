@@ -128,16 +128,16 @@ public class UnitTest1
 
         //Act
         int id = 1;
-        BookDto edit = new BookDto()
+        BookDto expected = new BookDto()
         {
             Id = 4,
             Author = "JakisCzwartyAutor",
             Isbn = "123654789"
         };
 
-        await service.EditBook(id, edit);
+        await service.EditBook(id, expected);
 
-        var expected = await _context.Books.Select(x => new BookDto
+        var result = await _context.Books.Select(x => new BookDto
         {
             Id = x.Id,
             Author = x.Author,
@@ -146,7 +146,7 @@ public class UnitTest1
 
 
         //Assert
-        expected.Author.Should().BeEquivalentTo(edit.Author);
-        expected.Isbn.Should().BeEquivalentTo(edit.Isbn);
+        result.Author.Should().BeEquivalentTo(expected.Author);
+        result.Isbn.Should().BeEquivalentTo(expected.Isbn);
      }
 }
