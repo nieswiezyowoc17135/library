@@ -24,12 +24,19 @@ namespace Library.Controllers
 
         [HttpGet]
         public async Task<ActionResult> GetDataFromDb()
-        {            
+        {
             var bytes = await _fileService.CreatingFile();
-
-            //zwracanie danych do pliku o określonej nazwie 
-            return File(bytes, "application/json", Path.GetFileName("Data.csv"));
-        }
+            if (bytes != null)
+            {
+                //zwracanie danych do pliku o określonej nazwie 
+                return File(bytes, "application/json", Path.GetFileName("Data.csv"));
+            } 
+            //to nie dziala bo bytes bedzie zawsze zapelnione headerami
+            else
+            {
+                return NoContent();
+            }            
+       }
 
         [HttpPost]
         public async Task<ActionResult> PostDataToDb(IFormFile filePath)
