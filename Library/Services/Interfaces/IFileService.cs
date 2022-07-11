@@ -6,5 +6,6 @@ namespace Library.Services.Interfaces
     {
         Task<bool> AddingToDatabase(IFormFile filePath);
         Task<byte[]> CreatingFile();
+        Task<byte[]> CreatingFileWithStartAndEnd(int? start, int? end);
     }
 }

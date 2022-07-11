@@ -40,6 +40,40 @@ namespace Library.Services
             return memoryStream.ToArray();
         }
 
+        public async Task<byte[]> CreatingFileWithStartAndEnd(int? start, int? end)
+        {
+            //pobieranie wszystkich danych z bazy i wjebanie do listy
+            List<BookDto> downloadedData = new List<BookDto>();
+            List<BookDto> correctData = new List<BookDto>();
+            downloadedData = await _bookService.GetAllBooks();
+
+            for (int i = (int)start - 1; i<end; i++)
+            {
+                if (downloadedData[i] != null)
+                {
+                    //poprawna lista
+                    correctData.Add(downloadedData[i]);
+                }
+            }
+            
+            //ustawianie konfigu odnosnie formatowania
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ";" };
+
+            //plik do którego będą zapisywane dane (juz nie plik bo bedzie uzywany memoryStream)
+            var memoryStream = new MemoryStream();
+            using (var writer = new StreamWriter(memoryStream))
+
+            //uzywanie klasy CSVwritera do ustawienia poprawnych ustawien i zapisanie danych pobranych do pliku downloadedDataFile z dowloadedData param.
+            using (var csv = new CsvWriter(writer, config))
+            {
+                //zapisywanie danych do downloadedDataFile.csv z downloadedData
+                csv.WriteRecords(correctData);
+            }
+
+            //zwracanie danych do pliku o określonej nazwie 
+            return memoryStream.ToArray();
+        }
+
         public async Task<bool> AddingToDatabase(IFormFile filePath)
         {
             //config jak ma czytac plik

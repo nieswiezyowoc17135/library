@@ -23,19 +23,42 @@ namespace Library.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetDataFromDb()
+        public async Task<ActionResult> GetDataFromDb(int? startElement, int? endElement)
         {
-            var bytes = await _fileService.CreatingFile();
-            if (bytes != null)
+            //wraunek dla wprowadzonych wszystkich danych, dla tylko endElementu, dla tylko startElementu
+            if (startElement != null && endElement != null)
             {
-                //zwracanie danych do pliku o określonej nazwie 
-                return File(bytes, "application/json", Path.GetFileName("Data.csv"));
-            } 
-            //to nie dziala bo bytes bedzie zawsze zapelnione headerami
-            else
+                var bytes = await _fileService.CreatingFileWithStartAndEnd(startElement, endElement);
+                if (bytes != null)
+                {
+                    //zwracanie danych do pliku o określonej nazwie 
+                    return File(bytes, "application/json", Path.GetFileName("Data.csv"));
+                }
+                //to nie dziala bo bytes bedzie zawsze zapelnione headerami
+                else
+                {
+                    return NoContent();
+                }
+            } else if (startElement == null && endElement != null)
             {
                 return NoContent();
-            }            
+            } else if (startElement != null && endElement == null)
+            {
+                return NoContent();
+            } else
+            {
+                var bytes = await _fileService.CreatingFile();
+                if (bytes != null)
+                {
+                    //zwracanie danych do pliku o określonej nazwie 
+                    return File(bytes, "application/json", Path.GetFileName("Data.csv"));
+                }
+                //to nie dziala bo bytes bedzie zawsze zapelnione headerami
+                else
+                {
+                    return NoContent();
+                }
+            }       
        }
 
         [HttpPost]
