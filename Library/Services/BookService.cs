@@ -20,7 +20,7 @@ namespace Library.Services
             var _book = new Book()
             {
                 Author = book.Author,
-                Isbn = book.Isbn
+                Isbn = book.Isbn             
             };
 
             _context.Books.Add(_book);

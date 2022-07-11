@@ -1,6 +1,7 @@
 ﻿using CsvHelper;
 using CsvHelper.Configuration;
 using Library.Entities;
+using Library.Services.Interfaces;
 using Library.Services.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,42 +14,33 @@ namespace Library.Controllers
     [ApiController]
     public class FileController : ControllerBase
     {
-        private readonly MyBooksContext _context;
 
-        public FileController(MyBooksContext context)
+        private readonly IFileService _fileService;
+
+        public FileController(IFileService fileService)
         {
-            _context = context;
+            _fileService = fileService;
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetData()
-        {
-            //pobrane dane z bazdy danych i wjebane do listy
-            List<BookDto> downloadedData = new List<BookDto>();
-            downloadedData = await _context.Books.Select(x => new BookDto
-            {
-                Id = x.Id,
-                Author = x.Author,
-                Isbn = x.Isbn
-            }).ToListAsync();
-                        
-            //ustawianie konfigu odnosnie formatowania
-            var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ";"};
-            
-            //plik do którego będą zapisywane dane
-            using (var writer = new StreamWriter("downloadedDataFile.csv"))
-            //uzywanie klasy CSVwritera do ustawienia poprawnych ustawien i zapisanie danych pobranych do pliku downloadedDataFile z dowloadedData param.
-            using (var csv = new CsvWriter(writer, config))
-            {
-                //zapisywanie danych do downloadedDataFile.csv z downloadedData
-                csv.WriteRecords(downloadedData);
-            }
+        public async Task<ActionResult> GetDataFromDb()
+        {            
+            var bytes = await _fileService.CreatingFile();
 
-            //tworzenie pliku fizycznego, który będziemy zwracać
-            var bytes = await System.IO.File.ReadAllBytesAsync("downloadedDataFile.csv");
-
-            /*return Ok(downloadedData);*/
+            //zwracanie danych do pliku o określonej nazwie 
             return File(bytes, "application/json", Path.GetFileName("Data.csv"));
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> PostDataToDb(IFormFile filePath)
+        {
+            if (await _fileService.AddingToDatabase(filePath))
+            {
+                return Ok();
+            } else
+            {
+                return NoContent();
+            }
         }
     }
 }
