@@ -1,4 +1,5 @@
 ﻿using CsvHelper;
+using CsvHelper.Configuration;
 using Library.Entities;
 using Library.Services.Models;
 using Microsoft.AspNetCore.Http;
@@ -30,14 +31,24 @@ namespace Library.Controllers
                 Author = x.Author,
                 Isbn = x.Isbn
             }).ToListAsync();
-
-            //ten path jest do zmiany na roznych systemach
-            using (var writer = new StreamWriter("C:\\Users\\pswider\\Downloads\\downloadedDataFile.csv"))
-            using (var csv = new CsvWriter(writer, CultureInfo.InvariantCulture))
+                        
+            //ustawianie konfigu odnosnie formatowania
+            var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ";"};
+            
+            //plik do którego będą zapisywane dane
+            using (var writer = new StreamWriter("downloadedDataFile.csv"))
+            //uzywanie klasy CSVwritera do ustawienia poprawnych ustawien i zapisanie danych pobranych do pliku downloadedDataFile z dowloadedData param.
+            using (var csv = new CsvWriter(writer, config))
             {
+                //zapisywanie danych do downloadedDataFile.csv z downloadedData
                 csv.WriteRecords(downloadedData);
             }
-            return Ok(downloadedData);
+
+            //tworzenie pliku fizycznego, który będziemy zwracać
+            var bytes = await System.IO.File.ReadAllBytesAsync("downloadedDataFile.csv");
+
+            /*return Ok(downloadedData);*/
+            return File(bytes, "application/json", Path.GetFileName("Data.csv"));
         }
     }
 }
