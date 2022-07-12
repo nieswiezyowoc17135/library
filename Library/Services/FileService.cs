@@ -16,11 +16,11 @@ namespace Library.Services
             _bookService = bookService;
         }
 
-        public async Task<byte[]> CreatingFile()
+        public async Task<byte[]> CreatingFile(int take, int skip, string word)
         {
             //pobrane dane z bazdy danych i wjebanie do listy
             List<BookDto> downloadedData = new List<BookDto>();
-            downloadedData = await _bookService.GetAllBooks();
+            downloadedData = await _bookService.FilterBooks(take, skip, word);
 
             //ustawianie konfigu odnosnie formatowania
             var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ";" };

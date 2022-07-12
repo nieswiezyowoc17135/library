@@ -23,9 +23,9 @@ namespace Library.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetDataFromDb()
+        public async Task<ActionResult> GetDataFromDb(int take, int skip, string word)
         {
-            var bytes = await _fileService.CreatingFile();
+            var bytes = await _fileService.CreatingFile(take, skip, word);
             if (bytes != null)
             {
                 //zwracanie danych do pliku o określonej nazwie 

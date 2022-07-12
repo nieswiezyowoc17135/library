@@ -93,5 +93,35 @@ namespace Library.Services
                 Isbn = x.Isbn
             }).ToListAsync();
         }
+
+        public async Task<List<BookDto>> FilterBooks(int take, int skip, string word)
+        {
+            var queryable = _context.Books.Select(x => new BookDto {
+                Id = x.Id, 
+                Author = x.Author,
+                Isbn = x.Isbn
+            });
+
+            //warunek dla skipa
+            if (skip != 0 && skip <= queryable.Count())
+            {
+                queryable = queryable.Skip(skip);
+            }
+
+            //warunek dla podanego słowa w kontrolerze
+            if (word != null)
+            {
+                queryable = queryable.Where(x => x.Author.Contains(word));
+            }
+
+            //warunek dla take
+            if (take != 0 && take <= queryable.Count())
+            {
+                queryable = queryable.Take(take);
+            }
+
+            //zawracanie ostatecznej listy
+            return await queryable.ToListAsync();
+        }
     }
 }
