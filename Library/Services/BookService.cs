@@ -93,5 +93,23 @@ namespace Library.Services
                 Isbn = x.Isbn
             }).ToListAsync();
         }
+
+/*        public async Task<List<BookDto>> FilterBooks(int take)
+        {
+            var queryable = _context.Books.Select(x => new BookDto
+            {
+                Id = x.Id,
+                Author = x.Author,
+                Isbn = x.Isbn
+            });
+
+            if (take > 0)
+            {
+                queryable.Take(take);
+            }
+
+            //zwracanie listy, która tworzy się asynchronicznie z obiektów, które są w bazie
+            return await queryable.ToListAsync();
+        }*/
     }
 }

@@ -46,32 +46,39 @@ namespace Library.Services
             List<BookDto> downloadedData = new List<BookDto>();
             List<BookDto> correctData = new List<BookDto>();
             downloadedData = await _bookService.GetAllBooks();
+            int elementsCounter = downloadedData.Count();
 
-            for (int i = (int)start - 1; i<end; i++)
+            if ((int)end - (int)start <= elementsCounter && end <= elementsCounter && start < end)
             {
-                if (downloadedData[i] != null)
+                for (int i = (int)start - 1; i < end; i++)
                 {
-                    //poprawna lista
-                    correctData.Add(downloadedData[i]);
+                    if (downloadedData[i] != null)
+                    {
+                        //poprawna lista
+                        correctData.Add(downloadedData[i]);
+                    }
                 }
+
+                //ustawianie konfigu odnosnie formatowania
+                var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ";" };
+
+                //plik do którego będą zapisywane dane (juz nie plik bo bedzie uzywany memoryStream)
+                var memoryStream = new MemoryStream();
+                using (var writer = new StreamWriter(memoryStream))
+
+                //uzywanie klasy CSVwritera do ustawienia poprawnych ustawien i zapisanie danych pobranych do pliku downloadedDataFile z dowloadedData param.
+                using (var csv = new CsvWriter(writer, config))
+                {
+                    //zapisywanie danych do downloadedDataFile.csv z downloadedData
+                    csv.WriteRecords(correctData);
+                }
+
+                //zwracanie danych do pliku o określonej nazwie 
+                return memoryStream.ToArray();
             }
-            
-            //ustawianie konfigu odnosnie formatowania
-            var config = new CsvConfiguration(CultureInfo.InvariantCulture) { Delimiter = ";" };
+            else return null;
 
-            //plik do którego będą zapisywane dane (juz nie plik bo bedzie uzywany memoryStream)
-            var memoryStream = new MemoryStream();
-            using (var writer = new StreamWriter(memoryStream))
 
-            //uzywanie klasy CSVwritera do ustawienia poprawnych ustawien i zapisanie danych pobranych do pliku downloadedDataFile z dowloadedData param.
-            using (var csv = new CsvWriter(writer, config))
-            {
-                //zapisywanie danych do downloadedDataFile.csv z downloadedData
-                csv.WriteRecords(correctData);
-            }
-
-            //zwracanie danych do pliku o określonej nazwie 
-            return memoryStream.ToArray();
         }
 
         public async Task<bool> AddingToDatabase(IFormFile filePath)
