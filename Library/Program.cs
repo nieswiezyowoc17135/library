@@ -1,9 +1,12 @@
 using Library.Entities;
+using Library.Middleware;
 using Library.Services;
 using Library.Services.Interfaces;
+using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add services to the container.
 
@@ -24,12 +27,24 @@ builder.Services.AddScoped<IFileService, FileService>();
 
 var app = builder.Build();
 
+//cors
+app.UseCors(x => x.AllowAnyHeader()
+      .AllowAnyMethod()
+      .AllowAnyOrigin()
+      .WithExposedHeaders("content-disposition")
+      );
+
+//middlware
+app.UseMiddleware<SwaggerBasicAuthMiddleware>();
+
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+
 
 app.UseHttpsRedirection();
 
