@@ -9,6 +9,7 @@ using Library.Entities;
 using Library.Services.Interfaces;
 using Library.Services;
 using Library.Services.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace Library.Controllers
 {
@@ -28,6 +29,8 @@ namespace Library.Controllers
         /// ////////////////////////////////////////////////////////////////////////////////      Zrobione
         // GET: api/Books
         [HttpGet]
+        //dzieki temu potrzebna jest autoryzacja
+        [Authorize]
         public async Task<ActionResult<List<BookDto>>> GetBooks()
         {
             return await _bookService.GetAllBooks();
