@@ -25,8 +25,8 @@ namespace Library.Middleware
                     var username = credentials[0];
                     var password = credentials[1];
                     // validate credentials
-                    if (username.Equals("swagger")
-                      && password.Equals("swagger"))
+                    if (username.Equals("pswider")
+                      && password.Equals("pswider"))
                     {
                         await next.Invoke(context).ConfigureAwait(false);
                         return;

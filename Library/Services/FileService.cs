@@ -10,10 +10,13 @@ namespace Library.Services
     public class FileService : IFileService
     {
         private readonly IBookService _bookService;
+        private readonly IEmailService _emailService;
+       
 
-        public FileService(IBookService bookService)
+        public FileService(IBookService bookService, IEmailService emailService)
         {
             _bookService = bookService;
+            _emailService = emailService;
         }
 
         public async Task<byte[]> CreatingFile(int take, int skip, string word)
@@ -68,6 +71,7 @@ namespace Library.Services
                     await _bookService.AddSomeBooks(book);
                 }
 
+                _emailService.SendEmail();
                 return true;
             } else
             {
