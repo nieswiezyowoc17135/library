@@ -5,6 +5,7 @@ using Library.Services.Interfaces;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Server.IISIntegration;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.FeatureManagement;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
@@ -56,6 +57,9 @@ builder.Services.AddDbContext<MyBooksContext>(
 builder.Services.AddScoped<IBookService, BookService>();
 builder.Services.AddScoped<IFileService, FileService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+
+//dodanie biblio odnosnie feature flags
+builder.Services.AddFeatureManagement();
 
 //JWT
 builder.Services.AddAuthentication(opt =>

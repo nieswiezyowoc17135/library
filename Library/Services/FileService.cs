@@ -3,6 +3,7 @@ using CsvHelper.Configuration;
 using Library.Entities;
 using Library.Services.Interfaces;
 using Library.Services.Models;
+using Microsoft.FeatureManagement;
 using System.Globalization;
 
 namespace Library.Services
@@ -11,12 +12,13 @@ namespace Library.Services
     {
         private readonly IBookService _bookService;
         private readonly IEmailService _emailService;
-       
+        private readonly IFeatureManager _featureManager;        
 
-        public FileService(IBookService bookService, IEmailService emailService)
+        public FileService(IBookService bookService, IEmailService emailService, IFeatureManager featureManager)
         {
             _bookService = bookService;
             _emailService = emailService;
+            _featureManager = featureManager;
         }
 
         public async Task<byte[]> CreatingFile(int take, int skip, string word)
@@ -45,6 +47,9 @@ namespace Library.Services
 
         public async Task<bool> AddingToDatabase(IFormFile filePath)
         {
+            //sprawdzanie czy jest włączone wysyłanie maila
+            Boolean isSendingEnabled = await _featureManager.IsEnabledAsync("isSendingEnabled");
+
             //config jak ma czytac plik
             var config = new CsvConfiguration(CultureInfo.InvariantCulture) {Delimiter = ";"};
 
@@ -71,7 +76,11 @@ namespace Library.Services
                     await _bookService.AddSomeBooks(book);
                 }
 
-                _emailService.SendEmail();
+                //wysylanie jezeli jest włączone
+                if (isSendingEnabled)
+                {
+                    _emailService.SendEmail();
+                }
                 return true;
             } else
             {
